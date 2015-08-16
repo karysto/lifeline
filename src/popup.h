@@ -7,7 +7,6 @@ static void pop_window_load(Window *window) {
   GRect window_bounds = layer_get_bounds(window_layer);
 }
 
-
 static void pop_window_unload(Window *window) {
 
 }

@@ -8,6 +8,7 @@
 
 #define TAP_NOT_DATA true
 
+static int SEIZURE_Z_THRESHOLD = 1500;
 static Window *s_main_window;
 static TextLayer *s_output_layer;
 
@@ -15,11 +16,11 @@ static void data_handler(AccelData *data, uint32_t num_samples) {
   // Long lived buffer
   static char s_buffer[128];
 
-  // Compose string of all data
-  if (data[0].z > 1500) {
+  // Detected seizure-like hand motion
+  if (data[0].z > SEIZURE_Z_THRESHOLD) {
     snprintf(s_buffer, sizeof(s_buffer), "something is wrong!");
 
-    // initiate popup window
+    // Initiate confirmation popup window
     s_pop_window = window_create();
     window_set_window_handlers(s_pop_window, (WindowHandlers) {
         .load = pop_window_load,
@@ -29,13 +30,7 @@ static void data_handler(AccelData *data, uint32_t num_samples) {
   }
 
   else {
-    snprintf(s_buffer, sizeof(s_buffer),
-    "you are okay"
-    //"N X,Y,Z\n0 %d,%d,%d\n1 %d,%d,%d\n2 %d,%d,%d", 
-    //data[0].x, data[0].y, data[0].z, 
-    //data[1].x, data[1].y, data[1].z, 
-    //data[2].x, data[2].y, data[2].z
-  );
+    snprintf(s_buffer, sizeof(s_buffer), "you are okay");
  }
 
   //Show the data
