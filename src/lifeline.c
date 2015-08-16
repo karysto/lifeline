@@ -32,10 +32,6 @@ static void data_handler(AccelData *data, uint32_t num_samples) {
   text_layer_set_text(s_output_layer, s_buffer);
 }
 
-static void tap_handler(AccelAxisType axis, int32_t direction) {
-
-}
-
 static void main_window_load(Window *window) {
   Layer *window_layer = window_get_root_layer(window);
   GRect window_bounds = layer_get_bounds(window_layer);
@@ -62,21 +58,18 @@ static void init() {
   });
   window_stack_push(s_main_window, true);
 
-  // Use tap service? If not, use data service
-    // Subscribe to the accelerometer data service
-    int num_samples = 3;
-    accel_data_service_subscribe(num_samples, data_handler);
+  // Subscribe to the accelerometer data service
+  int num_samples = 3;
+  accel_data_service_subscribe(num_samples, data_handler);
 
-    // Choose update rate
-    accel_service_set_sampling_rate(ACCEL_SAMPLING_10HZ);
-  
+  // Choose update rate
+  accel_service_set_sampling_rate(ACCEL_SAMPLING_10HZ);
 }
 
 static void deinit() {
   // Destroy main Window
   window_destroy(s_main_window);
-    accel_data_service_unsubscribe();
- 
+  accel_data_service_unsubscribe(); 
 }
 
 int main(void) {
