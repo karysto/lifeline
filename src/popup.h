@@ -13,6 +13,15 @@ static void pop_window_load(Window *window) {
   text_layer_set_text(s_output_pop_layer, "seizure alert");
   text_layer_set_overflow_mode(s_output_pop_layer, GTextOverflowModeWordWrap);
   layer_add_child(window_layer, text_layer_get_layer(s_output_pop_layer));
+
+  // emit haptic feedback
+  // Vibe pattern: ON for 1600ms, OFF for 800ms, ON for 800ms:
+  static const uint32_t const segments[] = { 1600, 800, 800 };
+  VibePattern pat = {
+    .durations = segments,
+    .num_segments = ARRAY_LENGTH(segments),
+  };
+  vibes_enqueue_custom_pattern(pat);
 }
 
 static void pop_window_unload(Window *window) {
