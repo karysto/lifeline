@@ -33,29 +33,7 @@ static void data_handler(AccelData *data, uint32_t num_samples) {
 }
 
 static void tap_handler(AccelAxisType axis, int32_t direction) {
-  switch (axis) {
-  case ACCEL_AXIS_X:
-    if (direction > 0) {
-      text_layer_set_text(s_output_layer, "X axis positive.");
-    } else {
-      text_layer_set_text(s_output_layer, "X axis negative.");
-    }
-    break;
-  case ACCEL_AXIS_Y:
-    if (direction > 0) {
-      text_layer_set_text(s_output_layer, "Y axis positive.");
-    } else {
-      text_layer_set_text(s_output_layer, "Y axis negative.");
-    }
-    break;
-  case ACCEL_AXIS_Z:
-    if (direction > 0) {
-      text_layer_set_text(s_output_layer, "Z axis positive.");
-    } else {
-      text_layer_set_text(s_output_layer, "Z axis negative.");
-    }
-    break;
-  }
+
 }
 
 static void main_window_load(Window *window) {
@@ -85,28 +63,20 @@ static void init() {
   window_stack_push(s_main_window, true);
 
   // Use tap service? If not, use data service
-  if (!TAP_NOT_DATA) {
-    // Subscribe to the accelerometer tap service
-    accel_tap_service_subscribe(tap_handler);
-  } else {
     // Subscribe to the accelerometer data service
     int num_samples = 3;
     accel_data_service_subscribe(num_samples, data_handler);
 
     // Choose update rate
     accel_service_set_sampling_rate(ACCEL_SAMPLING_10HZ);
-  }
+  
 }
 
 static void deinit() {
   // Destroy main Window
   window_destroy(s_main_window);
-
-  if (TAP_NOT_DATA) {
-    accel_tap_service_unsubscribe();
-  } else {
     accel_data_service_unsubscribe();
-  }
+ 
 }
 
 int main(void) {
