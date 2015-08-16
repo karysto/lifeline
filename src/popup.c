@@ -44,9 +44,29 @@ static void emit_vibration_alerts(void) {
 }
 
 /*
+ * Handle alarm termination key presses.
+ */
+void terminate_alarm_handler(ClickRecognizerRef recognizer, void *context) {
+    // handler logic
+    pop_window_pop();
+}
+
+/*
+ * Subscribes handlers to click events.
+ */
+void terminate_click_config_provider(void *context) {
+    window_single_click_subscribe(BUTTON_ID_UP,     terminate_alarm_handler);
+    window_single_click_subscribe(BUTTON_ID_SELECT, terminate_alarm_handler);
+    window_single_click_subscribe(BUTTON_ID_DOWN,   terminate_alarm_handler);
+}
+
+/*
  * Loads the popup window when seizure motion detected. 
  */
 static void pop_window_load(Window *window) {
+  counter = COUNTDOWN_SECONDS; 
+  window_set_click_config_provider(s_pop_window, terminate_click_config_provider);
+
   Layer *window_layer = window_get_root_layer(window);
   GRect window_bounds = layer_get_bounds(window_layer);
 
@@ -84,7 +104,6 @@ static void pop_window_unload(Window *window) {
  * Pushes the pop up window to the window stack frame.
  */
 void pop_window_push() {
-    counter = COUNTDOWN_SECONDS; 
     s_pop_window = window_create();
     window_set_window_handlers(s_pop_window, (WindowHandlers) {
         .load = pop_window_load,
