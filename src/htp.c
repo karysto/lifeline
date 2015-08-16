@@ -4,7 +4,7 @@
  */
 
 #include <pebble.h>
-#include <popup.h>
+#include "popup.h"
 
 #define TAP_NOT_DATA true
 
@@ -21,12 +21,7 @@ static void data_handler(AccelData *data, uint32_t num_samples) {
     snprintf(s_buffer, sizeof(s_buffer), "something is wrong!");
 
     // Initiate confirmation popup window
-    s_pop_window = window_create();
-    window_set_window_handlers(s_pop_window, (WindowHandlers) {
-        .load = pop_window_load,
-        .unload = pop_window_unload
-    });
-    window_stack_push(s_pop_window, true);
+    pop_window_push();  
   }
 
   else {
