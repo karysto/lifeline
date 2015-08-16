@@ -4,23 +4,12 @@
  */
 
 #include <pebble.h>
+#include <popup.h>
 
 #define TAP_NOT_DATA true
 
 static Window *s_main_window;
 static TextLayer *s_output_layer;
-
-static Window *s_pop_window;
-
-static void pop_window_load(Window *window) {
-  Layer *window_layer = window_get_root_layer(window);
-  GRect window_bounds = layer_get_bounds(window_layer);
-}
-
-
-static void pop_window_unload(Window *window) {
-
-}
 
 static void data_handler(AccelData *data, uint32_t num_samples) {
   // Long lived buffer
