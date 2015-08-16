@@ -10,7 +10,11 @@ const  int  COUNTDOWN_SECONDS = 7;
 static int  counter           = 7;
 static char buf[]             = "1234567890";
 
-static void app_timer_callback(void *context){
+/*
+ * Performs one second of the countdown.
+ * Writes the current countdown to the screen.
+ */
+static void app_timer_callback(void *context) {
    APP_LOG(APP_LOG_LEVEL_DEBUG, "timer callback"); 
    if (counter > 0) {
      counter--;
@@ -27,6 +31,21 @@ static void app_timer_callback(void *context){
    }
 }
 
+/*
+ * Emits two spaced-vibrations.
+ */
+static void emit_vibration_alerts(void) {
+  static const uint32_t const segments[] = { 1600, 800, 800 };
+  VibePattern pat = {
+    .durations = segments,
+    .num_segments = ARRAY_LENGTH(segments),
+  };
+  vibes_enqueue_custom_pattern(pat);
+}
+
+/*
+ * Loads the popup window when seizure motion detected. 
+ */
 static void pop_window_load(Window *window) {
   Layer *window_layer = window_get_root_layer(window);
   GRect window_bounds = layer_get_bounds(window_layer);
@@ -48,24 +67,23 @@ static void pop_window_load(Window *window) {
   layer_add_child(window_layer, text_layer_get_layer(s_countdown_layer));
 
   // emit haptic feedback
-  // Vibe pattern: ON for 1600ms, OFF for 800ms, ON for 800ms:
-  static const uint32_t const segments[] = { 1600, 800, 800 };
-  VibePattern pat = {
-    .durations = segments,
-    .num_segments = ARRAY_LENGTH(segments),
-  };
-  vibes_enqueue_custom_pattern(pat);
+  emit_vibration_alerts();
 
   // display the timer
   s_app_timer = app_timer_register(1000, app_timer_callback, NULL);
 }
 
+/*
+ * Cleans up elements when the popup window closes.
+ */
 static void pop_window_unload(Window *window) {
-  // Destroy output TextLayer
   text_layer_destroy(s_output_pop_layer);
 }
 
-void pop_window_push(){
+/*
+ * Pushes the pop up window to the window stack frame.
+ */
+void pop_window_push() {
     counter = COUNTDOWN_SECONDS; 
     s_pop_window = window_create();
     window_set_window_handlers(s_pop_window, (WindowHandlers) {
@@ -75,6 +93,9 @@ void pop_window_push(){
     window_stack_push(s_pop_window, true);
 }
 
-void pop_window_pop(){
+/*
+ * Pops the pop up window off of the window stack frame.
+ */
+void pop_window_pop() {
     window_stack_pop(true);
 }
