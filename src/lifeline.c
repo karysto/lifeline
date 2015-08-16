@@ -1,15 +1,12 @@
 /*
- * Constructs a Window housing an output TextLayer to show data from 
- * either modes of operation of the accelerometer.
+ * Constructs a Window housing an output TextLayer to show data for
+ * one's health state based on the motion of the of the accelerometer.
  */
-
 #include <pebble.h>
 #include "popup.h"
 
-#define TAP_NOT_DATA true
-
 static int SEIZURE_Z_THRESHOLD = 1500;
-static Window *s_main_window;
+static Window    *s_main_window;
 static TextLayer *s_output_layer;
 
 static void data_handler(AccelData *data, uint32_t num_samples) {
@@ -36,8 +33,7 @@ static void main_window_load(Window *window) {
   // Create output TextLayer
   s_output_layer = text_layer_create(GRect(5, 0, window_bounds.size.w - 10, window_bounds.size.h));
   text_layer_set_font(s_output_layer, fonts_get_system_font(FONT_KEY_GOTHIC_24));
-  text_layer_set_text(s_output_layer, "No data yet.");
-  text_layer_set_overflow_mode(s_output_layer, GTextOverflowModeWordWrap);
+  text_layer_set_text_alignment(s_output_layer, GTextAlignmentCenter);
   layer_add_child(window_layer, text_layer_get_layer(s_output_layer));
 }
 
