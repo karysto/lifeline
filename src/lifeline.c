@@ -18,14 +18,11 @@ static void data_handler(AccelData *data, uint32_t num_samples) {
 
   // Detected seizure-like hand motion
   if (data[0].z > SEIZURE_Z_THRESHOLD) {
-    snprintf(s_buffer, sizeof(s_buffer), "something is wrong!");
-
-    // Initiate confirmation popup window
     pop_window_push();  
   }
 
   else {
-    snprintf(s_buffer, sizeof(s_buffer), "you are okay");
+    snprintf(s_buffer, sizeof(s_buffer), "Health State: Neutral");
  }
 
   //Show the data
