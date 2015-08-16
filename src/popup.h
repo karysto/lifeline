@@ -2,6 +2,11 @@
 
 static Window *s_pop_window;
 static TextLayer *s_output_pop_layer;
+static AppTimer *s_app_timer;
+
+static void app_timer_callback(void *context){
+    window_stack_pop(true);
+}
 
 static void pop_window_load(Window *window) {
   Layer *window_layer = window_get_root_layer(window);
@@ -22,6 +27,9 @@ static void pop_window_load(Window *window) {
     .num_segments = ARRAY_LENGTH(segments),
   };
   vibes_enqueue_custom_pattern(pat);
+
+  // display the timer
+  s_app_timer = app_timer_register(7000, app_timer_callback, NULL);
 }
 
 static void pop_window_unload(Window *window) {
