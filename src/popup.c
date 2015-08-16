@@ -1,20 +1,27 @@
 #include "popup.h"
+#include <stdio.h>
+#include <stdlib.h>
 
 static Window *s_pop_window;
-static TextLayer *s_output_pop_layer;
+static TextLayer *s_output_pop_layer, *s_countdown_layer;
 static AppTimer *s_app_timer;
 static int counter = 0;
+static char buf[] = "1234567890";
 
 static void app_timer_callback(void *context){
    APP_LOG(APP_LOG_LEVEL_DEBUG, "timer callback"); 
    if (counter < 7) {
      counter++;
 
+     // convert the counter into a string
+     snprintf(buf, sizeof(buf), "%d", counter);
+     text_layer_set_text(s_countdown_layer, buf);
+
      s_app_timer = app_timer_register(1000, app_timer_callback, NULL);
    } 
 
    else {
-    app_timer_cancel(s_app_timer);
+     app_timer_cancel(s_app_timer);
      window_stack_pop(true);
    }
 }
@@ -29,6 +36,14 @@ static void pop_window_load(Window *window) {
   text_layer_set_text(s_output_pop_layer, "seizure alert");
   text_layer_set_overflow_mode(s_output_pop_layer, GTextOverflowModeWordWrap);
   layer_add_child(window_layer, text_layer_get_layer(s_output_pop_layer));
+
+  // Create output TextLayer for countdown
+  s_countdown_layer = text_layer_create(GRect(30, 50, 100, 50));
+  text_layer_set_font(s_countdown_layer, fonts_get_system_font(FONT_KEY_GOTHIC_24));
+  text_layer_set_text(s_countdown_layer, "0");
+  text_layer_set_text_alignment(s_countdown_layer, GTextAlignmentCenter);
+  text_layer_set_overflow_mode(s_countdown_layer, GTextOverflowModeWordWrap);
+  layer_add_child(window_layer, text_layer_get_layer(s_countdown_layer));
 
   // emit haptic feedback
   // Vibe pattern: ON for 1600ms, OFF for 800ms, ON for 800ms:
